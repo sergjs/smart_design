@@ -1,7 +1,6 @@
 import 'materialize-css';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { useRoutes } from './routes';
-import './App.css';
 import { Header } from './components/Header';
 
 function App() {

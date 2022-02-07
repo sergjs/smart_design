@@ -1,4 +1,8 @@
 @import '~materialize-css/dist/css/materialize.min.css';
+.body{
+
+  background-color: rgb(244, 244, 248);
+}
 .wrapper{
   max-width: 100%;
 }
@@ -35,4 +39,19 @@
   width: 400px;
   border-radius: 5px;
   background: white;
+}
+.info-text{
+  height: 150px;
+  overflow-y: scroll;
+}
+.button-delete{
+  right: 15px;
+  bottom: 10px;
+  position: absolute;
+}
+.logo-margin{
+  margin-left: 10px;
+}
+.margin-down{
+  padding-bottom: 30px !important
 }

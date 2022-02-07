@@ -6,7 +6,13 @@ const { check, validationResult } = require('express-validator')
 // /api/register
 router.post('/register',
     [
-        check('about', 'Минимальная длина текста 6 символов').isLength({ min: 6 })
+        check('about', 'Минимальная длина текста 6 символов').isLength({ min: 6 }),
+        check('name', 'Минимальная длина текста 1 символ').isLength({ min: 1 }),
+        check('id', 'Минимальная длина текста 1 символ').isLength({ min: 1 }),
+        check('specifications1', 'Минимальная длина текста 1 символ').isLength({ min: 1 }),
+        check('specifications2', 'Минимальная длина текста 1 символ').isLength({ min: 1 }),
+        check('specifications3', 'Минимальная длина текста 1 символ').isLength({ min: 1 }),
+        check('specifications4', 'Минимальная длина текста 1 символ').isLength({ min: 1 }),
     ],
     async (req, res) => {
         try {
@@ -32,19 +38,26 @@ router.post('/register',
             res.status(201).json({ message: 'Телефон создан' })
 
         } catch (e) {
-            console.log(e)
             res.status(500).json({ message: 'Что-то пошло не так' })
         }
     })
 
-router.get('/register', async (req, res) => { 
-        try {
-            const phones = await Device.find();
-            res.json(phones)
-        } catch (e) {
-            console.log(e)
-            res.status(500).json(e)
-        }
-    });
+router.get('/register', async (req, res) => {
+    try { 
+        const phones = await Device.find();
+        res.json(phones)
+    } catch (e) {
+        res.status(500).json(e)
+    }
+});
+router.delete('/delete', async (req, res) => {
+    try {
+        const { id } = req.body
+        await Device.deleteOne({ id });
+        res.json({ message: 'телефон удален'})
+    } catch (e) {
+        res.status(500).json(e)
+    }
+});
 
 module.exports = router

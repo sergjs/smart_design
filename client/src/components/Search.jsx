@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useHttp } from "../hooks/http.hook";
+import { debounce } from "debounce";
 
-export const Search = ({ setListPhone, listPhone, fetchAbout, request }) => {
+export const Search = ({ setListPhone, fetchAbout, request }) => {
     const [textSearch, setTextSearch] = useState('')
 
 
@@ -10,15 +10,23 @@ export const Search = ({ setListPhone, listPhone, fetchAbout, request }) => {
     }
 
     const filterListButton = async () => {
-        
-        if (!textSearch) return fetchAbout();
+        if (!textSearch) return debounce(fetchAbout, 1200);
         try {
             const fetched = await request('/api/register', 'GET', null)
             setListPhone(fetched)
             setListPhone((prevState) => prevState.filter(elem =>
-                textSearch == elem.name))
+                elem.name.toLowerCase().match(textSearch)))
         } catch (e) { }
     }
+    // function debounce(f, ms) {
+    //     let isCooldown = false;
+    //     return function () {
+    //         if (isCooldown) return;
+    //         f.apply(this, arguments);
+    //         isCooldown = true;
+    //         setTimeout(() => isCooldown = false, ms);
+    //     };
+    // }
 
     return (
         <div className="row">

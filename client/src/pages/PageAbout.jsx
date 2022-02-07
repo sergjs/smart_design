@@ -2,15 +2,17 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Preloader } from '../components/Preloader';
 import { Search } from '../components/Search';
 import { useHttp } from "../hooks/http.hook";
+import { Modal } from '../modal/modal';
 
-export const PageAbout = () => { 
+
+export const PageAbout = () => {
     const [isReady, setIsReady] = useState(true)
     const [listPhone, setListPhone] = useState([])
-    const { loading, request } = useHttp()
-console.log(listPhone)
+    const { request } = useHttp()
+    const [flag, setFlag] = useState(false);
+
     const fetchAbout = useCallback(async () => {
         try {
-            setIsReady(true)
             const fetched = await request('/api/register', 'GET', null)
             setListPhone(fetched)
             setIsReady(false)
@@ -21,9 +23,23 @@ console.log(listPhone)
         fetchAbout()
     }, [fetchAbout])
 
+    const deleteId = async (id) => {
+        try {
+            setIsReady(true)
+            await request('/api/delete', 'DELETE', { id })
+            const fetched = await request('/api/register', 'GET', null)
+            setListPhone(fetched)
+            setIsReady(false)
+        } catch (e) { }
+    }
+
+    const modalAdd = () => {
+        setFlag(true)
+    }
+
     return (<>
-        <Search setListPhone={setListPhone} listPhone={listPhone} fetchAbout={fetchAbout} request={request}/>
-        {isReady ? <Preloader/> : (listPhone.length != 0 
+        <Search setListPhone={setListPhone} fetchAbout={fetchAbout} request={request} />
+        {isReady ? <Preloader /> : (listPhone.length != 0
             ?
             <div className='pageAboutContainer'>
                 {listPhone.map(e =>
@@ -31,22 +47,26 @@ console.log(listPhone)
                         <div className="card  darken-1">
                             <div className="card-content  ">
                                 <span className="card-title"><b>{e.name}</b></span>
-                                <p><strong>Индификатор Id:</strong>  {e.id}</p>
-                                <p><strong>Описание: </strong>{e.about}</p>
+                                <span><strong>Индификатор Id:</strong></span> <span  >{e.id}</span>
+                                <p className='info-text'><strong>Описание: </strong>{e.about}</p>
                             </div>
-                            <div className="card-action">
+                            <div className="card-action margin-down">
                                 <ul>
                                     <li><strong>Диагональ (дюйм): </strong>{e.specifications1}</li>
                                     <li><strong>Разрешение (пикс): </strong>{e.specifications2}</li>
                                     <li><strong>Встроенная память (Гб): </strong>{e.specifications3}</li>
-                                    <li><strong>Процессор:</strong> {e.specifications4}</li>
+                                    <li  ><strong>Процессор:</strong> {e.specifications4}</li>
                                 </ul>
+                                <button onClick={() => <Modal setFlag={setFlag} comment={`Удалить телефон ${e.name} ?`} action={deleteId.bind(null, e.id)} />} className='waves-effect waves-light btn-small  button-delete'  >
+                                    <i  className="material-icons">delete</i>
+                                </button>
                             </div>
                         </div>
+                        {flag && <Modal setFlag={setFlag} comment={`Удалить телефон ${e.name} ?`} action={deleteId.bind(null, e.id)} />}
                     </div>
                 )}
             </div>
             :
-            <div className='container'> <h4 style={{ 'textAlign': 'center' }}>Такого телефона нет</h4></div>)}
+            <div className='container'> <h4 style={{ 'textAlign': 'center' }}>Пусто</h4></div>)}
     </>)
 }
