@@ -16,7 +16,6 @@ export const PageAdd = () => {
   const [errorInput, setErrorInput] = useState(false);
 
   useEffect(() => {
-    console.log(error)
     message(error)
   }, [error, message])
 

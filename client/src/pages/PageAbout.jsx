@@ -8,8 +8,10 @@ import { Modal } from '../modal/modal';
 export const PageAbout = () => {
     const [isReady, setIsReady] = useState(true)
     const [listPhone, setListPhone] = useState([])
-    const { request } = useHttp()
+    const {  request } = useHttp()
     const [flag, setFlag] = useState(false);
+    const [idDelete, setIdDelete] = useState();
+    const [nameDelete, setNameDelete] = useState();
 
     const fetchAbout = useCallback(async () => {
         try {
@@ -30,11 +32,14 @@ export const PageAbout = () => {
             const fetched = await request('/api/register', 'GET', null)
             setListPhone(fetched)
             setIsReady(false)
+            setFlag(false)
         } catch (e) { }
     }
 
-    const modalAdd = () => {
+    const modalAdd = (name, id) => {
         setFlag(true)
+        setNameDelete(name)
+        setIdDelete(id)
     }
 
     return (<>
@@ -57,12 +62,12 @@ export const PageAbout = () => {
                                     <li><strong>Встроенная память (Гб): </strong>{e.specifications3}</li>
                                     <li  ><strong>Процессор:</strong> {e.specifications4}</li>
                                 </ul>
-                                <button onClick={() => <Modal setFlag={setFlag} comment={`Удалить телефон ${e.name} ?`} action={deleteId.bind(null, e.id)} />} className='waves-effect waves-light btn-small  button-delete'  >
+                                <button onClick={() => modalAdd(e.name, e.id)} className='waves-effect waves-light btn-small  button-delete'  >
                                     <i  className="material-icons">delete</i>
                                 </button>
                             </div>
                         </div>
-                        {flag && <Modal setFlag={setFlag} comment={`Удалить телефон ${e.name} ?`} action={deleteId.bind(null, e.id)} />}
+                        {flag && <Modal setFlag={setFlag} comment={`Удалить телефон ${nameDelete} ?`} action={deleteId.bind(null, idDelete)} />}
                     </div>
                 )}
             </div>

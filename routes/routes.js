@@ -1,28 +1,13 @@
 const { Router } = require('express')
 const router = Router()
 const Device = require('../models/Device')
-const { check, validationResult } = require('express-validator')
 
 // /api/register
 router.post('/register',
-    [
-        check('about', 'Минимальная длина текста 6 символов').isLength({ min: 6 }),
-        check('name', 'Минимальная длина текста 1 символ').isLength({ min: 1 }),
-        check('id', 'Минимальная длина текста 1 символ').isLength({ min: 1 }),
-        check('specifications1', 'Минимальная длина текста 1 символ').isLength({ min: 1 }),
-        check('specifications2', 'Минимальная длина текста 1 символ').isLength({ min: 1 }),
-        check('specifications3', 'Минимальная длина текста 1 символ').isLength({ min: 1 }),
-        check('specifications4', 'Минимальная длина текста 1 символ').isLength({ min: 1 }),
-    ],
+
     async (req, res) => {
         try {
-            const errors = validationResult(req)
-            if (!errors.isEmpty()) {
-                return res.status(400).json({
-                    errors: errors.array(),
-                    message: 'Некорректные данные при создании'
-                })
-            }
+
 
             const { name, id } = req.body
             const namePhone = await Device.findOne({ name })

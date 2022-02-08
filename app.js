@@ -1,12 +1,10 @@
 const express = require('express')
 const config = require('config')
 const mongoose = require('mongoose')
-const corsMiddleware = require('./middleware/cors.middleware')
 
 const app = express()
 app.use(express.json({extended:true}))
 app.use('/api/', require('./routes/routes'))
-app.use(corsMiddleware);
 const PORT = config.get('port') 
 
 async function start(){
